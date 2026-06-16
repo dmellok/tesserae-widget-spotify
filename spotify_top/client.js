@@ -275,14 +275,40 @@ export default function render(shadow, ctx) {
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    /* sm: hero only, drop the list and rank cell to keep the art big. */
-    @container w (max-width: 280px) {
+    /* xs: very narrow cell, drop the list to keep the hero art big. */
+    @container (max-width: 280px) {
       .st-list { display: none; }
     }
-    /* md: side-by-side hero + list when there's room horizontally. */
-    @container w (min-width: 360px) {
+    /* Vertical-space-aware collapse: when the cell doesn't have enough
+       height for a stacked hero + list to both read well, switch to a
+       side-by-side layout (hero on the left, list on the right). The
+       trigger fires on EITHER:
+       - short cells (``max-height: 360px``) regardless of orientation, OR
+       - landscape cells (``min-aspect-ratio: 1/1``) where horizontal
+         space is the abundant resource.
+       Both are gated on ``min-width: 281px`` so very narrow cells (the
+       xs branch above) still drop the list entirely instead of trying
+       to cram it next to a postage-stamp hero. */
+    @container (max-height: 360px) and (min-width: 281px),
+    @container (min-aspect-ratio: 1/1) and (min-width: 281px) {
       .st-grid {
-        grid-template-columns: minmax(40%, 1fr) 1.2fr;
+        grid-template-columns: minmax(30%, auto) 1fr;
+        align-items: stretch;
+      }
+      .st-hero {
+        justify-content: center;
+        min-width: 0;
+      }
+      /* In side-by-side mode the row height drives the art size. The
+         stacked default ``width: 100%; aspect-ratio: 1/1`` would size
+         the art off the column width and could overflow the row when
+         the cell is shorter than the column is wide. Pin to height
+         instead so the art shrinks to fit. */
+      .st-hero-art {
+        width: auto;
+        height: 100%;
+        max-width: 100%;
+        align-self: center;
       }
     }
   `;
