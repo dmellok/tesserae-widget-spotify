@@ -25,4 +25,4 @@ OAuth-required widgets aren't useful out of the box, every user has to register 
 
 ## License
 
-MIT. See [LICENSE](./LICENSE).
+AGPL-3.0-or-later. See [LICENSE](./LICENSE).
