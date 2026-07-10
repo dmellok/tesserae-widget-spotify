@@ -329,6 +329,26 @@ export default function render(shadow, ctx) {
     }
   `;
 
+  // Fragments (issue #60): the Panels canvas can place just one part of the
+  // widget. ``ctx.fragment`` selects which; "full" (default) is the whole
+  // card. "hero" is the #1 cover card; "list" is the full ranked list.
+  const frag = ctx?.fragment || "full";
+  if (frag === "hero") {
+    shadow.innerHTML = `
+      ${css}
+      <style>${layout}</style>
+      <div class="w" data-widget="spotify_top"><div class="w-body"><div class="st-grid">${heroCard(items[0], 1, showRank)}</div></div></div>`;
+    return;
+  }
+  if (frag === "list") {
+    const fullList = items.map((it, i) => listRow(it, i + 1, showRank)).join("");
+    shadow.innerHTML = `
+      ${css}
+      <style>${layout}</style>
+      <div class="w" data-widget="spotify_top"><div class="w-body"><ul class="st-list">${fullList}</ul></div></div>`;
+    return;
+  }
+
   shadow.innerHTML = `
     ${css}
     <style>${layout}</style>

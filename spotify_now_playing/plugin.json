@@ -1,7 +1,7 @@
 {
   "tesserae_compat": "1.x",
   "name": "Spotify, Now Playing",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "kind": "widget",
   "description": "Currently-playing Spotify track, album art, title, artist, album and progress, in five selectable layouts (split / cover / minimal / vinyl / stack). Requires the Spotify Core plugin (connect your account at Plugins → Spotify).",
   "icon": "ph-music-notes",
@@ -47,6 +47,12 @@
       "label": "Show track-deterministic waveform glyph",
       "default": true
     }
+  ],
+  "fragments": [
+    { "id": "full", "label": "Full card", "w": 300, "h": 200, "icon": "ph-music-notes" },
+    { "id": "art", "label": "Album art", "w": 160, "h": 160, "icon": "ph-vinyl-record" },
+    { "id": "track", "label": "Track + artist", "w": 240, "h": 90, "icon": "ph-text-aa" },
+    { "id": "waveform", "label": "Waveform + progress", "w": 280, "h": 90, "icon": "ph-wave-sine" }
   ],
   "render": {
     "dither": "floyd-steinberg",

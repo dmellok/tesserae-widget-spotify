@@ -47,6 +47,33 @@ export default function render(shadow, ctx) {
     dimmed ? "opacity:0.5" : "",
   ].filter(Boolean).join(";");
 
+  // Fragments (issue #60): the Panels canvas can place just one part of the
+  // widget. ``ctx.fragment`` selects which; "full" (default) is the whole
+  // card. "art" is the bleed image alone; "info" is the track + artist text.
+  const frag = ctx?.fragment || "full";
+  if (frag === "art") {
+    shadow.innerHTML = `
+      ${css}
+      <div class="w is-bleed" data-widget="spotify_album_art">
+        <img src="${escapeHtml(data.album_art)}" alt="${escapeHtml(data.track || "")}" style="${imgStyle}">
+      </div>`;
+    return;
+  }
+  if (frag === "info") {
+    shadow.innerHTML = `
+      ${css}
+      <style>
+        .saa-info { display: flex; flex-direction: column; justify-content: center; height: 100%; gap: var(--space-1); padding: var(--space-3); }
+        .saa-info .t { font-size: clamp(1em, 9cqmin, 2.4em); font-weight: var(--fw-black); line-height: var(--lh-tight); overflow: hidden; text-overflow: ellipsis; }
+        .saa-info .a { font-size: clamp(.8em, 6cqmin, 1.4em); color: var(--text-secondary); font-weight: var(--fw-semi); overflow: hidden; text-overflow: ellipsis; }
+      </style>
+      <div class="w" data-widget="spotify_album_art"><div class="w-body saa-info">
+        ${data.track ? `<span class="t">${escapeHtml(data.track)}</span>` : ""}
+        ${data.artist ? `<span class="a">${escapeHtml(data.artist)}</span>` : ""}
+      </div></div>`;
+    return;
+  }
+
   shadow.innerHTML = `
     ${css}
     <div class="w is-bleed" data-widget="spotify_album_art">

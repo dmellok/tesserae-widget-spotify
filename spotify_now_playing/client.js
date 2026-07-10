@@ -166,6 +166,48 @@ export default function render(shadow, ctx) {
     }
   `;
 
+  // Fragments (issue #60): the Panels canvas can place just one part of the
+  // widget. ``ctx.fragment`` selects which; "full" (default) is the whole
+  // card. art / track / waveform each fill their own box.
+  const frag = ctx?.fragment || "full";
+  if (frag === "art") {
+    const artFull = (showArt && data.album_art)
+      ? `<img src="${escapeHtml(data.album_art)}" alt="${escapeHtml(data.album || "")}" style="width:100%;height:100%;object-fit:cover;display:block">`
+      : `<div class="img-hero" style="width:100%;height:100%;display:grid;place-items:center"><i class="ph-bold ph-music-notes"></i></div>`;
+    shadow.innerHTML = `${css}<div class="w is-bleed" data-widget="spotify_now_playing">${artFull}</div>`;
+    return;
+  }
+  if (frag === "track") {
+    shadow.innerHTML = `${css}
+      <style>
+        .snp-track { display: flex; flex-direction: column; justify-content: center; height: 100%; gap: var(--space-1); padding: var(--space-3); }
+        .snp-track .t { font-size: clamp(1em, 9cqmin, 2.4em); font-weight: var(--fw-black); line-height: var(--lh-tight); overflow: hidden; text-overflow: ellipsis; }
+        .snp-track .s { font-size: clamp(.8em, 6cqmin, 1.3em); color: var(--text-secondary); font-weight: var(--fw-semi); overflow: hidden; text-overflow: ellipsis; }
+      </style>
+      <div class="w" data-widget="spotify_now_playing"><div class="w-body snp-track">
+        <span class="t">${escapeHtml(data.track)}</span>
+        ${sub ? `<span class="s">${escapeHtml(sub)}</span>` : ""}
+      </div></div>`;
+    return;
+  }
+  if (frag === "waveform") {
+    // Force the glyph + progress on even if toggled off; that's the point here.
+    const seed = `${data.artist || ""}|${data.album || ""}|${data.track || ""}`;
+    const wf = `<div class="spot-waveform">${waveformSvg({ seed, positionPct, accent: stateAccent })}</div>`;
+    const pb = hasProgress ? `
+      <div class="img-progress">
+        <div class="img-progress-track"><div class="img-progress-fill" style="width:${positionPct.toFixed(1)}%;background:${stateAccent}"></div></div>
+        <div class="img-progress-times"><span>${escapeHtml(progress || "0:00")}</span><span>${escapeHtml(duration || "0:00")}</span></div>
+      </div>` : "";
+    shadow.innerHTML = `${css}
+      <style>${layoutCss}
+        .snp-wf { display: flex; flex-direction: column; justify-content: center; height: 100%; gap: var(--space-2); padding: var(--space-3); }
+        .snp-wf .spot-waveform { height: 2.4em; margin: 0; }
+      </style>
+      <div class="w" data-widget="spotify_now_playing"><div class="w-body snp-wf">${wf}${pb}</div></div>`;
+    return;
+  }
+
   shadow.innerHTML = `
     ${css}
     <style>${layoutCss}</style>

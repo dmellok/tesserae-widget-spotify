@@ -219,6 +219,28 @@ export default function render(shadow, ctx) {
     }
   `;
 
+  // Fragments (issue #60): the Panels canvas can place just one part of the
+  // widget. ``ctx.fragment`` selects which; "full" (default) is the whole
+  // card. "list" is the rows without the title; "current" is the lede row.
+  const frag = ctx?.fragment || "full";
+  if (frag === "list") {
+    shadow.innerHTML = `
+      ${css}
+      <style>${layout}</style>
+      <div class="w" data-widget="spotify_queue"><div class="w-body list-body">${rows}</div></div>`;
+    return;
+  }
+  if (frag === "current") {
+    const cur = current
+      ? row(current, 0, { isCurrent: true, longestMs, pct: currentPct })
+      : '<p class="u-muted" style="padding:var(--space-3)">Nothing playing.</p>';
+    shadow.innerHTML = `
+      ${css}
+      <style>${layout}</style>
+      <div class="w" data-widget="spotify_queue"><div class="w-body list-body">${cur}</div></div>`;
+    return;
+  }
+
   shadow.innerHTML = `
     ${css}
     <style>${layout}</style>

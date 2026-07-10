@@ -1,7 +1,7 @@
 {
   "tesserae_compat": "1.x",
   "name": "Spotify, Queue",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "kind": "widget",
   "description": "Currently-playing Spotify track + the next few items in your queue. Pulls from /v1/me/player/queue via the shared spotify_core OAuth. Requires Spotify Premium, the queue endpoint is gated to paid accounts.",
   "icon": "ph-queue",
@@ -23,6 +23,11 @@
       "default": true,
       "help": "Lead with the current track (album art + title) before the queue list. Turn off for a queue-only feed."
     }
+  ],
+  "fragments": [
+    { "id": "full", "label": "Full card", "w": 280, "h": 220, "icon": "ph-queue" },
+    { "id": "list", "label": "Queue list", "w": 260, "h": 180, "icon": "ph-list" },
+    { "id": "current", "label": "Now playing", "w": 260, "h": 80, "icon": "ph-play" }
   ],
   "render": { "needs_network": true }
 }
