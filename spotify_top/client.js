@@ -124,7 +124,8 @@ export default function render(shadow, ctx) {
   const timeRange = data.time_range || "short_term";
   const kindLabel = KIND_LABEL[kind] || "Top";
   const kindIcon = KIND_ICON[kind] || "ph-music-notes";
-  const timeLabel = TIME_LABEL[timeRange] || "";
+  // Prefer the server-shaped label; fall back to the local map for older data.
+  const timeLabel = data.time_range_label || TIME_LABEL[timeRange] || "";
 
   if (items.length === 0) {
     shadow.innerHTML = `

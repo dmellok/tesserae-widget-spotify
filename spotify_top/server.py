@@ -11,6 +11,15 @@ from typing import Any
 
 from flask import current_app
 
+# Human labels for the API's time-range keys. Kept here (not only in the
+# client) so the window label is part of the shaped payload: it renders on the
+# server-embedded data and the client displays it directly.
+_TIME_LABEL = {
+    "short_term": "Last 4 weeks",
+    "medium_term": "Last 6 months",
+    "long_term": "All time",
+}
+
 
 def _core() -> Any:
     plugin = current_app.config["PLUGIN_REGISTRY"].get("spotify_core")
@@ -39,8 +48,10 @@ def fetch(
     top = core.top_items(kind, time_range, max_items)
     if top.get("error"):
         return {"error": top["error"]}
+    resolved_range = top.get("time_range", time_range)
     return {
         "kind": top.get("kind", kind),
-        "time_range": top.get("time_range", time_range),
+        "time_range": resolved_range,
+        "time_range_label": _TIME_LABEL.get(resolved_range, ""),
         "items": top.get("items") or [],
     }
