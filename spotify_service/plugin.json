@@ -1,0 +1,48 @@
+{
+  "tesserae_compat": "1.x",
+  "name": "Spotify (service)",
+  "version": "0.1.0",
+  "kind": "service",
+  "description": "Non-placeable data source that exposes the Spotify Web API to a code element, reusing the account connected in Plugins → Spotify (via Spotify Core). Not shown in the canvas picker; source it from a code/data element by its key 'spotify_service'. Probe with an empty scope to list scopes (now_playing, queue, top, raw). 'raw' does an authenticated GET of any Spotify Web API path you name (e.g. /v1/me/player/devices). Requires Spotify Core 0.2.0+ and a connected account.",
+  "icon": "ph-spotify-logo",
+  "supports": { "sizes": [] },
+  "cell_options": [
+    {
+      "name": "scope",
+      "type": "select",
+      "label": "Scope",
+      "default": "",
+      "choices": [
+        { "value": "", "label": "(discovery: list scopes)" },
+        { "value": "now_playing", "label": "Currently playing" },
+        { "value": "queue", "label": "Playback queue" },
+        { "value": "top", "label": "Top tracks / artists / albums" },
+        { "value": "raw", "label": "Raw GET of any Spotify Web API path" }
+      ]
+    },
+    {
+      "name": "kind",
+      "type": "select",
+      "label": "Top: what (top scope)",
+      "default": "tracks",
+      "choices": [
+        { "value": "tracks", "label": "Top tracks" },
+        { "value": "artists", "label": "Top artists" },
+        { "value": "albums", "label": "Top albums (derived from tracks)" }
+      ]
+    },
+    {
+      "name": "time_range",
+      "type": "select",
+      "label": "Top: time window (top scope)",
+      "default": "short_term",
+      "choices": [
+        { "value": "short_term", "label": "Last 4 weeks" },
+        { "value": "medium_term", "label": "Last 6 months" },
+        { "value": "long_term", "label": "All time" }
+      ]
+    },
+    { "name": "limit", "type": "number", "label": "Top: item count (top scope)", "default": 10 },
+    { "name": "path", "type": "string", "label": "API path (raw scope, e.g. /v1/me/player/devices)", "default": "" }
+  ]
+}
